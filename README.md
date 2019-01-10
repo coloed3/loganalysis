@@ -23,7 +23,7 @@ In order to run the code on this repo you will need to perform the following ste
 2. Install Vagrant and set up linux virtual machine [Vagrant](https://www.vagrantup.com/intro/getting-started/)
 3. Install Postgres sql in your Vagrant VM
 4. Download this Repository
-5. In terminal
-  > run the following command psql -d news -f newsdata.sql this **make sure the sql file is in side your vagrant folder
+5. In terminal run the following
+  >  command psql -d news -f newsdata.sql this **make sure the sql file is in side your vagrant folder
   
 6. Execute python program by typing **python query.py
