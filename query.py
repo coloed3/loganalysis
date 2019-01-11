@@ -1,5 +1,7 @@
-import  psycopg2 # needed to create connection to database
-import pprint #https://docs.python.org/3/library/pprint.html allows to format the object we are printing
+import psycopg2  # needed to create connection to database
+import pprint
+""" https://docs.python.org/3/library/pprint.html
+    allows to format the object we are printing"""
 
 
 """
@@ -17,8 +19,8 @@ import pprint #https://docs.python.org/3/library/pprint.html allows to format th
 
 # using class to connect to database  using try/catch for errors
 
-class  DatabaseConnection:
-    def  __init__(self):
+class DatabaseConnection:
+    def __init__(self):
         try:
             dbnews = 'news'
             self.connection = psycopg2.connect(database=dbnews)
@@ -28,27 +30,33 @@ class  DatabaseConnection:
             pprint("Cannot Connect to database")
 
 
-# method below will be used to get back the most popular three articles of all timeself
+# method below will be used to get back the most
+# popular three articles of all timeself
+
 
     def most_popular_authors(self):
         self.cursor.execute("SELECT * FROM authors ")
         authors = self.cursor.fetchall()
 
         for author in authors:
-            print(authors )
-
+            print(authors)
 
     def most_popular_article(self):
-
-        self.cursor.execute("Select * from articles")
+        query = """
+                   SELECT A.title, count(L.path)
+                    FROM  log AS L
+                    LEFT JOIN articles as A on A.slug = L.path
+                    WHERE L.path = '/article/'
+                    GROUP BY A.title, L.path
+                    ORDER BY count(L.path) DESC
+                    LIMIT 3;
+            """
+        self.cursor.execute(query)
         articles = self.cursor.fetchall()
 
         for article in articles:
-            print(articles)
-
-
-
-
+            print('"{title}" {count}'.format(
+                title=article[0], count=article[1]))
 
 
 if __name__ == '__main__':
