@@ -15,13 +15,43 @@ import pprint #https://docs.python.org/3/library/pprint.html allows to format th
 # following code reference pynative.com
 
 
-# using class to cnnect to database  using try/catch for errors abs
+# using class to connect to database  using try/catch for errors
 
 class  DatabaseConnection:
-    def __init__(self):
+    def  __init__(self):
         try:
             dbnews = 'news'
             self.connection = psycopg2.connect(database=dbnews)
-            self.conenction.autocommit = True
             self.cursor = self.connection.cursor()
+
         except:
+            pprint("Cannot Connect to database")
+
+
+# method below will be used to get back the most popular three articles of all timeself
+
+    def most_popular_authors(self):
+        self.cursor.execute("SELECT * FROM authors ")
+        authors = self.cursor.fetchall()
+
+        for author in authors:
+            print(authors )
+
+
+    def most_popular_article(self):
+
+        self.cursor.execute("Select * from articles")
+        articles = self.cursor.fetchall()
+
+        for article in articles:
+            print(articles)
+
+
+
+
+
+
+if __name__ == '__main__':
+    database_connection = DatabaseConnection()
+    # database_connection.most_popular_authors()
+    database_connection.most_popular_article()
