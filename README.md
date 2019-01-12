@@ -23,10 +23,11 @@ In order to run the code on this repo you will need to perform the following ste
 2. Install Vagrant and set up linux virtual machine [Vagrant](https://www.vagrantup.com/intro/getting-started/)
 3. Install Postgres sql in your Vagrant VM
 4. Download this Repository
-5. In terminal run the following
+5. Download newsdatabase [sql](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip)  
+6. In terminal run the following
   >  command psql -d news -f newsdata.sql this **make sure the sql file is in side your vagrant folder**
 
 6. Execute python program by typing **python query.py**
 
 *> query.py is based off a class in order to run the methods in side the
-> class, under the if__name__ == '__main__' use the variable database_connection. **METHOD NAME** 
+> class, under the if__name__ == '__main__' use the variable database_connection. **METHOD NAME**
