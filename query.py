@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import psycopg2  # needed to create connection to database
 import pprint
 """ https://docs.python.org/3/library/pprint.html
