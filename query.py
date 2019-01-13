@@ -33,33 +33,59 @@ class DatabaseConnection:
 # method below will be used to get back the most
 # popular three articles of all timeself
 
-
-    def most_popular_authors(self):
-        self.cursor.execute("SELECT * FROM authors ")
-        authors = self.cursor.fetchall()
-
-        for author in authors:
-            print(authors)
+"""
+https://stackoverflow.com/questions/8578385/postgresql-create-view - reference for the views created
+"""
 
     def most_popular_article(self):
-        query = """
-                   SELECT A.title, count(L.path)
-                    FROM  log AS L
-                    LEFT JOIN articles as A on A.slug = L.path
-                    WHERE L.path = '/article/'
-                    GROUP BY A.title, L.path
-                    ORDER BY count(L.path) DESC
-                    LIMIT 3;
-            """
-        self.cursor.execute(query)
+        # database name
+        dbnews = 'news'
+        # created variable to close()
+        db = psycopg2.connect(database=dbnews)
+        query_article = """
+        Select title, count(*) as views from articles join log ON articles.slug = substring(log.path, 10) GROUP BY title ORDER BY views desc limit 3
+        """
+        self.cursor.execute(query_article)
         articles = self.cursor.fetchall()
+        db.close()
+        print(articles)
 
-        for article in articles:
-            print('"{title}" {count}'.format(
-                title=article[0], count=article[1]))
+    def most_popular_authors(self):
+        dbnews = 'news'
+        db = psycopg2.connect(database=dbnews)
+        query_authors = """SELECT authors.name, count(*) as views
+                  FROM articles
+                  JOIN authors
+                  ON articles.author = authors.id
+                  JOIN log
+                  ON articles.slug = substring(log.path, 10)
+                  WHERE log.status LIKE '200 OK'
+                  GROUP BY authors.name ORDER BY views DESC LIMIT 3;"""
+        self.cursor.execute(query_authors)
+        author = self.cursor.fetchall()
+        db.close()
+        print("these are the top three {}".format(author))
+        # for authors in author:
+        #     print(author . "\n")
+
+# methon below will query for the days where the errors were greater than 1%
+    def days_greater_than_1p(self):
+        dbnews = "news"
+        db = psycopg2.connect(database=dbnews)
+        # view codeis on the readme file
+        query_gt1p = """
+          SELECT elogs.date, round(100.0*errcount/totallogcount,2) as percent
+                      FROM findlog, elogs
+                      WHERE findlog.date = elogs.date
+                      AND errcount > totallogcount/100;
+         """
+            one_percent = self.cursor.fetchall()
+            db.close()
+            print(one_percent)
 
 
 if __name__ == '__main__':
     database_connection = DatabaseConnection()
-    # database_connection.most_popular_authors()
     database_connection.most_popular_article()
+    database_connection.most_popular_authors()
+    database_connection.days_greater_than_1p()
