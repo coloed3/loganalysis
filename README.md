@@ -32,7 +32,7 @@ In order to run the code on this repo you will need to perform the following ste
 > query.py is based off a class in order to run the methods in side the
 > class, under the if__name__ == '__main__' use the variable database_connection. **METHOD NAME**
 
-### VIEWS FOR FINDING 1% OF REQUEST LEAD ERRORS
+<!-- ### VIEWS FOR FINDING 1% OF REQUEST LEAD ERRORS
 psqlquery.sql has the view and query to test against the database, please remember to download the newsdata base in order for this to work
 
 
@@ -45,4 +45,4 @@ psqlquery.sql has the view and query to test against the database, please rememb
 SELECT to_char(time,'DD-MON-YYYY') as Date, count(*) as errcount
 FROM log
 WHERE STATUS = '404 NOT FOUND'
-GROUP BY Date;
+GROUP BY Date; -->

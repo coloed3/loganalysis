@@ -36,6 +36,7 @@ class DatabaseConnection:
 # method below will be used to get back the most
 # popular three articles of all timeself
 
+
     def most_popular_article(self):
         # database name
         dbnews = 'news'
@@ -44,7 +45,7 @@ class DatabaseConnection:
         query_article = """
         Select title, count(*) as views
         from articles join log ON articles.slug = substring(log.path, 10)
-        GROUP BY title ORDER BY views desc limit 3
+        GROUP BY title ORDER BY views desc limit 3;
         """
         self.cursor.execute(query_article)
         articles = self.cursor.fetchall()
@@ -65,7 +66,7 @@ class DatabaseConnection:
         self.cursor.execute(query_authors)
         author = self.cursor.fetchall()
         db.close()
-        print("these are the top three {}".format(author))
+        print(author)
         # for authors in author:
         #     print(author . "\n")
 
@@ -73,16 +74,33 @@ class DatabaseConnection:
     def days_greater_than_1p(self):
         dbnews = "news"
         db = psycopg2.connect(database=dbnews)
-        # view codeis on the readme file
+
         query_gt1p = """
-          SELECT elogs.date, round(100.0*errcount/totallogcount,2) as percent
-                      FROM findlog, elogs
-                      WHERE findlog.date = elogs.date
-                      AND errcount > totallogcount/100;
+          WITH total_request AS (
+                SELECT time::date AS day, count(*)
+                FROM log
+                GROUP BY time::date
+                ORDER BY time::date
+              ), total_errors AS (
+                SELECT time::date AS day, count(*)
+                FROM log
+                WHERE status != '200 OK'
+                GROUP BY time::date
+                ORDER BY time::date
+              ), total_failures AS (
+                SELECT total_request.day,
+                  total_errors.count::float / total_request.count::float * 100
+                  AS total_error_count
+                FROM total_request, total_errors
+                WHERE total_request.day = total_errors.day
+              )
+            SELECT * FROM total_failures WHERE total_error_count > 1;
          """
         one_percent = self.cursor.fetchall()
         db.close()
         print(one_percent)
+
+        return
 
 
 if __name__ == '__main__':

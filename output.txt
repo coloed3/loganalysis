@@ -16,3 +16,11 @@ name          | count
 Ursula La Multa        | 507594
 Rudolf von Treppenwitz | 423457
 Anonymous Contributor  | 170098
+
+
+
+Result for 1% failures 
+day     | total_error_count
+------------+-------------------
+2016-07-17 |  2.26268624680273
+(1 row)
