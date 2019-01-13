@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import psycopg2  # needed to create connection to database
 import pprint
-""" https://docs.python.org/3/library/pprint.html
-    allows to format the object we are printing"""
+"""https://docs.python.org/3/library/pprint.html
+allows to format the
+object we are printing"""
 
 
 """
@@ -35,17 +36,15 @@ class DatabaseConnection:
 # method below will be used to get back the most
 # popular three articles of all timeself
 
-"""
-https://stackoverflow.com/questions/8578385/postgresql-create-view - reference for the views created
-"""
-
     def most_popular_article(self):
         # database name
         dbnews = 'news'
         # created variable to close()
         db = psycopg2.connect(database=dbnews)
         query_article = """
-        Select title, count(*) as views from articles join log ON articles.slug = substring(log.path, 10) GROUP BY title ORDER BY views desc limit 3
+        Select title, count(*) as views
+        from articles join log ON articles.slug = substring(log.path, 10)
+        GROUP BY title ORDER BY views desc limit 3
         """
         self.cursor.execute(query_article)
         articles = self.cursor.fetchall()
@@ -81,9 +80,9 @@ https://stackoverflow.com/questions/8578385/postgresql-create-view - reference f
                       WHERE findlog.date = elogs.date
                       AND errcount > totallogcount/100;
          """
-            one_percent = self.cursor.fetchall()
-            db.close()
-            print(one_percent)
+        one_percent = self.cursor.fetchall()
+        db.close()
+        print(one_percent)
 
 
 if __name__ == '__main__':
