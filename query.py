@@ -36,7 +36,6 @@ class DatabaseConnection:
 # method below will be used to get back the most
 # popular three articles of all timeself
 
-
     def most_popular_article(self):
         # database name
         dbnews = 'news'
@@ -74,28 +73,34 @@ class DatabaseConnection:
     def days_greater_than_1p(self):
         dbnews = "news"
         db = psycopg2.connect(database=dbnews)
-
+        """
+        below query i used the following documentation to complete
+        https://stackoverflow.com/questions
+        /38136854/how-to-use-multiple-with-statements-in-one-postgresql-query"
+        http://www.postgresqltutorial.com/postgresql-recursive-query/
+        https://www.tutorialspoint.com/postgresql/postgresql_with_clause.html"""
         query_gt1p = """
-          WITH total_request AS (
+                WITH total_request AS (
                 SELECT time::date AS day, count(*)
                 FROM log
                 GROUP BY time::date
                 ORDER BY time::date
-              ), total_errors AS (
+                 ), total_errors AS (
                 SELECT time::date AS day, count(*)
                 FROM log
                 WHERE status != '200 OK'
                 GROUP BY time::date
                 ORDER BY time::date
-              ), total_failures AS (
+                ), total_failures AS (
                 SELECT total_request.day,
-                  total_errors.count::float / total_request.count::float * 100
-                  AS total_error_count
+                total_errors.count::float / total_request.count::float * 100
+                 AS total_error_count
                 FROM total_request, total_errors
                 WHERE total_request.day = total_errors.day
-              )
-            SELECT * FROM total_failures WHERE total_error_count > 1;
-         """
+                )
+               SELECT * FROM total_failures WHERE total_error_count > 1;
+               """
+        self.cursor.execute(query_gt1p)
         one_percent = self.cursor.fetchall()
         db.close()
         print(one_percent)
