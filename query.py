@@ -42,9 +42,9 @@ class DatabaseConnection:
         # created variable to close()
         db = psycopg2.connect(database=dbnews)
         query_article = """
-        Select title, count(*) as views
+        Select title, count(*) as poparticle
         from articles join log ON articles.slug = substring(log.path, 10)
-        GROUP BY title ORDER BY views desc limit 3;
+        GROUP BY title ORDER BY poparticle desc limit 3;
         """
         self.cursor.execute(query_article)
         articles = self.cursor.fetchall()
@@ -54,14 +54,14 @@ class DatabaseConnection:
     def most_popular_authors(self):
         dbnews = 'news'
         db = psycopg2.connect(database=dbnews)
-        query_authors = """SELECT authors.name, count(*) as views
+        query_authors = """SELECT authors.name, count(*) as mostpopauthor
                   FROM articles
                   JOIN authors
                   ON articles.author = authors.id
                   JOIN log
                   ON articles.slug = substring(log.path, 10)
-                  WHERE log.status LIKE '200 OK'
-                  GROUP BY authors.name ORDER BY views DESC LIMIT 3;"""
+                  WHERE log.status = '200 OK'
+                  GROUP BY authors.name ORDER BY mostpopauthor DESC LIMIT 3;"""
         self.cursor.execute(query_authors)
         author = self.cursor.fetchall()
         db.close()
@@ -78,7 +78,13 @@ class DatabaseConnection:
         https://stackoverflow.com/questions
         /38136854/how-to-use-multiple-with-statements-in-one-postgresql-query"
         http://www.postgresqltutorial.com/postgresql-recursive-query/
-        https://www.tutorialspoint.com/postgresql/postgresql_with_clause.html"""
+        https://www.tutorialspoint.com/postgresql/postgresql_with_clause.html
+        https://stackoverflow.com/questions/17363023
+        /how-to-get-the-date-and-time-from-timestamp-in-postgresql-select-query
+
+        line 3 select now()::date - converted the now() to time matching the
+        table
+        """
         query_gt1p = """
                 WITH total_request AS (
                 SELECT time::date AS day, count(*)
